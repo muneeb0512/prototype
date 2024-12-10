@@ -1,0 +1,51 @@
+
+
+
+<h2 class="mb-4">Order Items</h2>
+<form action="/ssh/order" method="POST" class="row g-3">
+  <div class="col-md-6">
+    <label for="itemId" class="form-label">Select Item</label>
+    <select class="form-select" id="itemId" name="itemId" required>
+      <option value="" selected disabled>Select an item</option>
+      <% items.forEach(item => { %>
+        <option value="<%= item._id %>"><%= item.name %> - $<%= item.price.toFixed(2) %></option>
+      <% }) %>
+    </select>
+    <div class="invalid-feedback">
+      Please select an item.
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <label for="quantity" class="form-label">Quantity</label>
+    <input type="number" class="form-control" id="quantity" name="quantity" min="1" value="1" required>
+    <div class="invalid-feedback">
+      Please enter a valid quantity.
+    </div>
+  </div>
+
+  <div class="col-12">
+    <button type="submit" class="btn btn-primary">Add to Basket</button>
+    <a href="/ssh/basket" class="btn btn-secondary">View Basket</a>
+  </div>
+</form>
+
+
+
+
+<script>
+ 
+  (function () {
+    'use strict'
+    var forms = document.querySelectorAll('.needs-validation')
+    Array.prototype.slice.call(forms).forEach(function (form) {
+      form.addEventListener('submit', function (event) {
+        if (!form.checkValidity()) {
+          event.preventDefault()
+          event.stopPropagation()
+        }
+        form.classList.add('was-validated')
+      }, false)
+    })
+  })()
+</script>

@@ -1,0 +1,34 @@
+<!-- views/basket.ejs -->
+
+
+<h2 class="mb-4">Your Household Basket</h2>
+
+<% if (items.length > 0) { %>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th>Quantity</th>
+        <th>Added By</th>
+        <th>Added At</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% items.forEach(item => { %>
+        <tr>
+          <td><%= item.item.name %></td>
+          <td><%= item.quantity %></td>
+          <td><%= item.user.name %></td>
+          <td><%= item.added_at.toLocaleString() %></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+<% } else { %>
+  <p>No items in the basket.</p>
+<% } %>
+
+<form action="/ssh/place-order" method="POST" class="mt-4">
+  <button type="submit" class="btn btn-success">Place Order</button>
+  <a href="/ssh/order" class="btn btn-secondary">Back to Order Page</a>
+</form>
