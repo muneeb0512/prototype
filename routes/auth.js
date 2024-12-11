@@ -8,6 +8,8 @@ const Household = require('../models/Household');
 const bcrypt = require('bcryptjs');
 
 
+
+
 router.get('/register', (req, res) => {
   res.locals.activePage = 'register';
   res.render('register');
@@ -145,7 +147,7 @@ router.post('/login', (req, res, next) => {
   
 
   
-  // Logout
+  
   router.get('/logout', (req, res) => {
     req.logout(() => {
       req.flash('success_msg', 'You are logged out');

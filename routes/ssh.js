@@ -6,6 +6,14 @@ const Inventory = require('../models/Inventory');
 const Basket = require('../models/Basket');
 const BasketItem = require('../models/BasketItem');
 
+const {
+  getOrderItems,
+  addItemToBasket,
+  getBasketItems,
+  placeOrder
+} = require("../services/sshservices.js");
+
+
 
 router.get("/home",(req,res)=>{
   res.locals.activePage = 'home';
@@ -17,7 +25,7 @@ router.get('/order', ensureAuthenticated, async (req, res) => {
   res.locals.activePage = 'order';
   try {
     
-    const items = await Inventory.find();
+    const items = await getOrderItems();
     res.render('order', { items });
   } catch (err) {
     console.error(err);
@@ -37,24 +45,7 @@ router.post('/order', ensureAuthenticated, async (req, res) => {
   const householdId = req.user.household; 
 
   try {
-    let basket = await Basket.findOne({ household: householdId, status: 'active' });
-
-    if (!basket) {
-      basket = new Basket({
-        household: householdId,
-      });
-      await basket.save();
-    }
-
-    const basketItem = new BasketItem({
-      basket: basket._id,
-      item: itemId,
-      user: req.user._id,
-      quantity,
-    });
-
-    await basketItem.save();
-
+    await addItemToBasket(req.user.household, req.user._id, req.body.itemId, req.body.quantity);
     req.flash('success_msg', 'Item added to basket');
     res.redirect('/ssh/basket');
   } catch (err) {
@@ -70,17 +61,7 @@ router.get('/basket', ensureAuthenticated, async (req, res) => {
     res.locals.activePage = 'basket';
   
     try {
-      
-      const basket = await Basket.findOne({ household: householdId, status: 'active' });
-  
-      if (!basket) {
-        return res.render('basket', { items: [] }); 
-      }
-  
-      const items = await BasketItem.find({ basket: basket._id })
-        .populate('item')
-        .populate('user');
-  
+      const items = await getBasketItems(householdId);
       res.render('basket', { items });
     } catch (err) {
       console.error(err);
@@ -95,14 +76,7 @@ router.post('/place-order', ensureAuthenticated, async (req, res) => {
   const householdId = req.user.household;
 
   try {
-    const basket = await Basket.findOne({ household: householdId, status: 'active' });
-
-    if (!basket) {
-      req.flash('error_msg', 'No active basket to place an order');
-      return res.redirect('/ssh/basket');
-    }
-
-    basket.status = 'completed';
+    await placeOrder(householdId);
     await basket.save();
 
     req.flash('success_msg', 'Order placed successfully');
