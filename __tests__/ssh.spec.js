@@ -1,10 +1,9 @@
-
 const {
-    getOrderItems,
-    addItemToBasket,
-    getBasketItems,
-    placeOrder
-  } = require("C:/Users/Administrator/prototype/services/sshservices.js");
+  getOrderItems,
+  addItemToBasket,
+  getBasketItems,
+  placeOrder
+} = require("../services/sshservices.js");
 
   const Inventory = require('../models/Inventory');
   const Basket = require('../models/Basket');
