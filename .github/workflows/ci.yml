@@ -1,6 +1,6 @@
-name: Node CI
+name: CI
 
-on:
+on: 
   push:
     branches: [ main ]
   pull_request:
@@ -9,36 +9,17 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-
     steps:
       - name: Check out the repository
         uses: actions/checkout@v3
 
-      - name: Set up Node
+      - name: Use Node.js 16
         uses: actions/setup-node@v3
         with:
           node-version: '16'
 
-      - name: Cache dependencies
-        uses: actions/cache@v3
-        with:
-         
-          path: node_modules
-         
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
       - name: Install dependencies
         run: npm install
 
-      
-      - name: Run tests with coverage
-        run: npm test -- --coverage
-
-     
-      - name: Upload coverage report
-        uses: actions/upload-artifact@v3
-        with:
-          name: coverage-report
-          path: coverage
+      - name: Run tests
+        run: npm test
